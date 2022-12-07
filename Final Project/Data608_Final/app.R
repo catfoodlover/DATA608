@@ -55,43 +55,58 @@ Temp_Diab <- left_join(Temp, DiaDiagnosed, by = c("county.name" = "County"))
 
 
 #fix missing decimals
-Temp_Diab <- Temp_Diab %>% mutate(value = ifelse(value > 50, value/10, value), d_type = 'Diabetes')
-Temp_Obese <- Temp_Obese %>% mutate(value = ifelse(value > 100, value/10, value), d_type = 'Obesity')
+Temp_Diab <- Temp_Diab %>% mutate(value = ifelse(value > 50, value/10, value), Input = 'Diabetes')
+Temp_Obese <- Temp_Obese %>% mutate(value = ifelse(value > 100, value/10, value), Input = 'Obesity')
+Temp_Income <- Temp_Income %>% mutate(Input = 'Income')
 
-Final <- bind_rows(Temp_Diab, Temp_Obese)
+Final <- bind_rows(Temp_Diab, Temp_Obese, Temp_Income)
+
+full_data <- bind_rows(Temp_Diab %>% select(region, value, Input), Temp_Obese %>% select(region, value, Input))
+full_data <- inner_join(full_data, Temp_Income %>% select(region, income = value))
 
 
-ui <- navbarPage(title = "Data",
+ui <- navbarPage(title = "NY State Income and Comorbidity Data",
                  tabPanel(title = 'Disease Explorer',
                           plotOutput("plot1"),
-                          selectInput('Type', 'd_type', choices = unique(Final$d_type), selected='Diabetes')
+                          selectInput('Type', 'Input', choices = unique(Final$Input), selected='Diabetes')
                  ),
 
                  tabPanel(title = 'Map Explorer',
                           plotOutput("plot2"),
-                          selectInput('Type2', 'd_type', choices = unique(Final$d_type), selected='Diabetes')))
+                          selectInput('Type2', 'Input', choices = unique(Final$Input), selected='Diabetes')),
 
+                  tabPanel(title = 'Relation Explorer',
+                           plotOutput("plot3"),
+                           selectInput('Type3', 'Input', choices = unique(full_data$Input), selected='Diabetes')))
 
 
 
 
 server <- function(input, output, session) {
-    
+    mskRvis::set_msk_ggplot()
     data1 <- reactive({
         dfSlice <- Final %>%
-            filter(d_type == input$Type)
+            filter(Input == input$Type)
     })
     
     data2 <- reactive({
         dfSlice <- Final %>%
-            filter(d_type == input$Type2)
+            filter(Input == input$Type2)
+    })
+    
+    data3 <- reactive({
+      dfSlice <- full_data %>%
+        filter(Input == input$Type3)
     })
     
     
     output$plot1 <- renderPlot({
         
         ggplot(data1(), aes(x = reorder(county.name, desc(value)), y = value)) +
-            geom_bar(stat="identity", color="blue", fill = "green") + labs(x = "County") + theme(axis.text.x = element_text(angle = 90))
+            geom_bar(stat="identity", color=NA, fill = mskRvis::msk_colors["msk_blue"]) + 
+        scale_y_continuous(labels = gtsummary::style_number,n.breaks = 7) +
+        labs(x = "County") + 
+        theme(axis.text.x = element_text(angle = 90))
     })
     
     output$plot2 <- renderPlot({
@@ -105,6 +120,16 @@ server <- function(input, output, session) {
                           legend     = "% Population",
                           num_colors = 9,
                           state_zoom = c("new york")) + scale_fill_brewer(palette="RdPu")
+    })
+    
+    output$plot3 <- renderPlot({
+      
+      progress = shiny::Progress$new()
+      on.exit(progress$close())
+      progress$set(message = "Creating image. Please wait.", value = 0)
+      
+      ggplot(data3(), aes(y = value, x = income)) + geom_point() + geom_smooth(method = "loess", se =
+                                                                                  TRUE, alpha = 0.2) + labs(title = "Income vs Comorbidity in NY State") + xlab("Mean Taxable Income by County") + ylab("Comorbidity Rate by County")
     })
     
     
