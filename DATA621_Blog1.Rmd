@@ -1,0 +1,23 @@
+---
+title: "DATA621 Blog 1"
+author: "William Aiken"
+date: '2022-12-07'
+output: html_document
+---
+
+
+### Simple Linear Regression
+
+### Overview
+
+Simple Linear Regression is on of the most important tools for an analyst to have in their tool box.  For this blog post we are going to explore why you would use Simple Linear Regression.  What assumptions are made when using it.  How to check those assumptions and what to do if those assumptions aren't met.  Then we are going to use Simple Linear Regression on a real dataset and examine the output.
+
+Simple Linear Regression is a model where there is a single predictor (independent) variable.  A linear function is fitted the predictor variable to predict the dependent variable.  The Ordinary Least Squares (OLS) is the most common method employed.  OLS minimizes the squared residuals to find the best fit line.  The slope of the best fit line is the correlation between the two variables.  By definition, this line is going to pass through the mean of both variables.
+
+
+$y = \alpha + \beta*x$
+
+### Assumptions
+
+No
+
