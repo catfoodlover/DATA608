@@ -380,15 +380,45 @@ analyst to have in their tool box. For this blog post we are going to
 explore why you would use Simple Linear Regression. What assumptions are
 made when using it. How to check those assumptions and what to do if
 those assumptions aren’t met. Then we are going to use Simple Linear
-Regression on a real dataset and examine the output.</p>
+Regression on a real data set and examine the output.</p>
 <p>Simple Linear Regression is a model where there is a single predictor
-(independant) variable. A linear function is fitted the predictor
-variable to predict the dependant variable. The Ordinary Least Squares
+(independent) variable. A linear function is fitted the predictor
+variable to predict the dependent variable. The Ordinary Least Squares
 (OLS) is the most common method employed. OLS minimizes the squared
-residuals to find the best fit line. The slope of the best fit line is
-the correlation between the two variables. By definition, this line is
-going to pass through the mean of both variables.</p>
-<p><span class="math inline">\(y = mx + b\)</span></p>
+residuals to find the best fit line. By definition, this line is going
+to pass through the mean of both variables. The slope of the best fit
+line is the correlation between the two variables. The correlation is
+the strength of the relationship between the variables.</p>
+<p><span class="math inline">\(y = \alpha + \beta*x\)</span></p>
+</div>
+<div id="assumptions" class="section level3">
+<h3>Assumptions</h3>
+<ul>
+<li><p>The errors(residuals) in the regression are approximately
+normally distributed</p></li>
+<li><p>The relationship is linear</p></li>
+<li><p>The observations are independent</p></li>
+<li><p>The data is normally distributed</p></li>
+</ul>
+</div>
+<div id="example-data-set" class="section level3">
+<h3>Example data set</h3>
+<p>We are going to explore the ‘diamonds’ data set that comes with the
+‘ggplot2’ data set</p>
+<pre class="r"><code>library(ggplot2)
+glimpse(diamonds)</code></pre>
+<pre><code>## Rows: 53,940
+## Columns: 10
+## $ carat   &lt;dbl&gt; 0.23, 0.21, 0.23, 0.29, 0.31, 0.24, 0.24, 0.26, 0.22, 0.23, 0.~
+## $ cut     &lt;ord&gt; Ideal, Premium, Good, Premium, Good, Very Good, Very Good, Ver~
+## $ color   &lt;ord&gt; E, E, E, I, J, J, I, H, E, H, J, J, F, J, E, E, I, J, J, J, I,~
+## $ clarity &lt;ord&gt; SI2, SI1, VS1, VS2, SI2, VVS2, VVS1, SI1, VS2, VS1, SI1, VS1, ~
+## $ depth   &lt;dbl&gt; 61.5, 59.8, 56.9, 62.4, 63.3, 62.8, 62.3, 61.9, 65.1, 59.4, 64~
+## $ table   &lt;dbl&gt; 55, 61, 65, 58, 58, 57, 57, 55, 61, 61, 55, 56, 61, 54, 62, 58~
+## $ price   &lt;int&gt; 326, 326, 327, 334, 335, 336, 336, 337, 337, 338, 339, 340, 34~
+## $ x       &lt;dbl&gt; 3.95, 3.89, 4.05, 4.20, 4.34, 3.94, 3.95, 4.07, 3.87, 4.00, 4.~
+## $ y       &lt;dbl&gt; 3.98, 3.84, 4.07, 4.23, 4.35, 3.96, 3.98, 4.11, 3.78, 4.05, 4.~
+## $ z       &lt;dbl&gt; 2.43, 2.31, 2.31, 2.63, 2.75, 2.48, 2.47, 2.53, 2.49, 2.39, 2.~</code></pre>
 </div>
 
 

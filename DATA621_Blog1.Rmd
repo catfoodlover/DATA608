@@ -5,19 +5,69 @@ date: '2022-12-07'
 output: html_document
 ---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
 
 ### Simple Linear Regression
 
 ### Overview
 
-Simple Linear Regression is on of the most important tools for an analyst to have in their tool box.  For this blog post we are going to explore why you would use Simple Linear Regression.  What assumptions are made when using it.  How to check those assumptions and what to do if those assumptions aren't met.  Then we are going to use Simple Linear Regression on a real dataset and examine the output.
+Simple Linear Regression is on of the most important tools for an analyst to have in their tool box.  For this blog post we are going to explore why you would use Simple Linear Regression.  What assumptions are made when using it.  How to check those assumptions and what to do if those assumptions aren't met.  Then we are going to use Simple Linear Regression on a real data set and examine the output.
 
-Simple Linear Regression is a model where there is a single predictor (independent) variable.  A linear function is fitted the predictor variable to predict the dependent variable.  The Ordinary Least Squares (OLS) is the most common method employed.  OLS minimizes the squared residuals to find the best fit line.  The slope of the best fit line is the correlation between the two variables.  By definition, this line is going to pass through the mean of both variables.
+Simple Linear Regression is a model where there is a single predictor (independent) variable.  A linear function is fitted the predictor variable to predict the dependent variable.  The Ordinary Least Squares (OLS) is the most common method employed.  OLS minimizes the squared residuals to find the best fit line.  By definition, this line is going to pass through the mean of both variables.  The slope of the best fit line is the correlation between the two variables.  The correlation is the strength of the relationship between the variables.  
 
 
 $y = \alpha + \beta*x$
 
 ### Assumptions
 
-No
+*  The errors(residuals) in the regression are approximately normally distributed
 
+*  The relationship is linear
+
+*  The observations are independent
+
+*  The data is normally distributed
+
+### Example data set
+
+We are going to explore the 'diamonds' data set that comes with the 'ggplot2' package.  The diamonds data set contains the price and properties of ~54,000 diamonds.  Let's use the 'glimpse' function to look at a sample of the data
+
+```{r}
+library(ggplot2)
+glimpse(diamonds)
+```
+
+Let's use the 'summary' function to examine the summary statistics of the data set.
+
+```{r}
+summary(diamonds)
+```
+
+It's helpful as a next step to look at histograms of all the variable in the data set.  We can see that some of the variables are not normally distributed, most importantly 'carat' and 'price'
+
+```{r}
+Hmisc::hist.data.frame(diamonds)
+```
+Let's build a simple linear model between price and carat.
+
+*  The Residuals are the difference between the actual values and the predicted values in the data set (ideally the Median would be zero)
+
+*  The coefficient for carat is positive, so there is a positive relationship between price and carat.
+
+*  The Std. Error of the coefficient is an estimate of the standard deviation of the coefficient.  If the coefficient is much larger than the Std. Error you know that the coefficient is not zero
+
+*  The t value is the coefficient divided by the standard error.  We want the t value to be large, it the number of Std. Errors our coefficient is away from zero.  
+
+
+```{r}
+slm_1 <- lm(price~carat, diamonds)
+summary(slm_1)
+```
+Let's use the 'performance' package to evaluate this model
+```{r}
+performance::check_model(slm_1)
+```
