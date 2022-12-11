@@ -1,4 +1,4 @@
-d3.csv('ue_industry.csv', data => {
+
 
 d3.csv('ue_industry.csv', data => {
 
@@ -26,4 +26,4 @@ d3.csv('ue_industry.csv', data => {
 
 });
 
-});
+
