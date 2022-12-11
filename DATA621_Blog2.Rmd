@@ -1,0 +1,17 @@
+---
+title: "DATA621 Blog 2"
+author: "William Aiken"
+date: "12/10/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+### Multiple Linear Regression
+
+Multiple Linear Regression is one of the most important tools for an analyst to have in their tool box.  For this blog post we are going to explore why you would use Multiple Linear Regression.  What assumptions are made when using it.  How to check those assumptions and what to do if those assumptions aren't met.  Then we are going to use Multiple Linear Regression on a real data set and examine the output.
+
+Multiple Linear Regression is a model where there is are multiple predictor (independent) variables.  A linear function is fitted the predictor variable to predict the dependent variable.  The Ordinary Least Squares (OLS) is the most common method employed.  OLS minimizes the squared residuals to find the best fit line.  By definition, this line is going to pass through the mean of both variables.  The slope of the best fit line is the correlation between the two variables.  The correlation is the strength of the relationship between the variables.

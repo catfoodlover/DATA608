@@ -1,4 +1,12 @@
+---
+title: "DATA608 Final Project Write Up"
+author: "William Aiken"
+date: "12/11/2022"
+output: html_document
+---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
 library(dplyr)
 library(readr)
 library(ggplot2)
@@ -8,6 +16,40 @@ library(choroplethr)
 library(choroplethrMaps)
 library(performance)
 library(shiny)
+```
+
+#Abstract
+
+Diabetes is a disease with a high health cost to the individual and high monetary cost to our communities.  New York state tracks diabetic rates at the county level along with other health and economic data.  I leveraged this publicly available data to explore the heterogeneity in diabetic rates in New York state.  I wanted to know if there was a correlation between diabetes, income, and obesity at the county level.  The individual variables were visualized.  Linear regression was used explore the relationship between diabetes (dependent variable) and income and obesity (independent variables).  The R-squared was found to be 0.355, showing a correlation between the outcome and predictive variables.  Both coefficients were found to significantly different from zero.  The incidence of diabetes increases with the increase of the obesity rate for the county and decreases with the increase in average income for a county.  Further exploration of the relationships could lead to better interventions to prevent diabetes.  In further analysis, the obesity rates and average incomes should be weighted by county population.
+
+
+# Part 1 - Introduction
+
+I was interested in exploring the hetrogeneity of diabetic rates in New York State and how it is related to income and obesity rates.  New York is an intersting state for this analysis because there are so many different geographic regions within the state.
+
+Research Question:  Are the diabetic rates in New York state correlated with the obesity rates and average income at the county level?
+
+
+# Part 2 - Data
+This data comes from the NY.GOV site as part of their open data sets
+
+* The Obesity and Diabetes data comes from the New York State Department of Health disease registries.  These registries are based on multiple sources including hospital registries in a given geographic area.  People who live outside a given area but receive treatment within a geographic region are not counted in these population based registries.
+
+[Obesity and Diabetes](https://health.data.ny.gov/Health/Community-Health-Obesity-and-Diabetes-Related-Indi/tchg-ruva)
+
+* The income data is collected by the New York State Department of Taxation and Finance. This data comes the New York State personal income tax returns that were filed in a timely fashion.  This data is for full-time New York State residents.
+
+[Income](https://data.ny.gov/Government-Finance/Average-Income-and-Tax-Liability-of-Full-Year-Resi/2w9v-ejxd)
+
+# Part 3 - Code
+
+* We read in the data sets from GitHub.
+
+* We filter and rename some variables so that they can be used in the Shiny app.
+
+* We set up our ui an server.  The ui slices the data so that we only visualize a subset of the data.
+
+```{r eval=FALSE}
 
 Income <- readr::read_delim("https://raw.githubusercontent.com/catfoodlover/Data607/main/Income.csv", delim = ';', show_col_types = FALSE)
 Obese <- readr::read_delim("https://raw.githubusercontent.com/catfoodlover/Data607/main/Obese.csv", delim = ';', show_col_types = FALSE)
@@ -139,3 +181,18 @@ server <- function(input, output, session) {
 
 
 shinyApp(ui = ui, server = server)
+```
+
+
+# Part 4 - Conclusion
+
+This analysis is important because type 2 diabetes is a debilitating desease that is largely preventable.  To understand what other factors are related to its incidence may lead to better prevention methods.
+
+We found that there is a correlation between diabetes and income and obesity.  There are some limitations to the interpretability of these results.  We used measurements captured at the county level, the populations within each county vary wildly.  We can't say what the relationship is at the population level of all people who live in New York state because these measurements are unweighted.
+
+
+### References
+
+New York State Department of Health. “Community Health Obesity and Diabetes Related Indicators: 2008 - 2012: State of New York.” Community Health Obesity and Diabetes Related Indicators: 2008 - 2012 | State of New York, 1 July 2016, https://health.data.ny.gov/Health/Community-Health-Obesity-and-Diabetes-Related-Indi/tchg-ruva. 
+
+New York State Department of Taxation and Finance. “Average Income and Tax Liability of Full-Year Residents by County - Table 5: State of New York.” Average Income and Tax Liability of Full-Year Residents by County - Table 5 | State of New York, 6 Feb. 2017, https://data.ny.gov/Government-Finance/Average-Income-and-Tax-Liability-of-Full-Year-Resi/2w9v-ejxd. 

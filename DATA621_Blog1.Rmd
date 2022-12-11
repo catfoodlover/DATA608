@@ -15,7 +15,7 @@ library(tidyverse)
 
 ### Overview
 
-Simple Linear Regression is on of the most important tools for an analyst to have in their tool box.  For this blog post we are going to explore why you would use Simple Linear Regression.  What assumptions are made when using it.  How to check those assumptions and what to do if those assumptions aren't met.  Then we are going to use Simple Linear Regression on a real data set and examine the output.
+Simple Linear Regression is one of the most important tools for an analyst to have in their tool box.  For this blog post we are going to explore why you would use Simple Linear Regression.  What assumptions are made when using it.  How to check those assumptions and what to do if those assumptions aren't met.  Then we are going to use Simple Linear Regression on a real data set and examine the output.
 
 Simple Linear Regression is a model where there is a single predictor (independent) variable.  A linear function is fitted the predictor variable to predict the dependent variable.  The Ordinary Least Squares (OLS) is the most common method employed.  OLS minimizes the squared residuals to find the best fit line.  By definition, this line is going to pass through the mean of both variables.  The slope of the best fit line is the correlation between the two variables.  The correlation is the strength of the relationship between the variables.  
 
@@ -41,7 +41,7 @@ library(ggplot2)
 glimpse(diamonds)
 ```
 
-Let's use the 'summary' function to examine the summary statistics of the data set.
+Let's use the 'summary' function to examine the central tendencies and distribution of the data set.
 
 ```{r}
 summary(diamonds)
@@ -52,7 +52,12 @@ It's helpful as a next step to look at histograms of all the variable in the dat
 ```{r}
 Hmisc::hist.data.frame(diamonds)
 ```
-Let's build a simple linear model between price and carat.
+
+### Analysis
+
+Let's build a simple linear model between price and carat. And then examine the output of the model.
+
+*  The coefficient for carat is the beta in our linear equation and intercept is the alpha in the equation.
 
 *  The Residuals are the difference between the actual values and the predicted values in the data set (ideally the Median would be zero)
 
@@ -60,14 +65,57 @@ Let's build a simple linear model between price and carat.
 
 *  The Std. Error of the coefficient is an estimate of the standard deviation of the coefficient.  If the coefficient is much larger than the Std. Error you know that the coefficient is not zero
 
-*  The t value is the coefficient divided by the standard error.  We want the t value to be large, it the number of Std. Errors our coefficient is away from zero.  
+*  The t value is the coefficient divided by the standard error.  We want the t value to be large, it is the number of Std. Errors our coefficient is away from zero.
+
+*  The Pr(>|t|) is the t statistic which tests the hypothesis that the coefficient is not zero.  Generally, if the p-value is smaller than 0.05 we reject the null hypothesis that the true value of the coefficient is zero.
+
+*  The Residual standard error tells us on average how much of prediction differs from the actual values.  Our Residual standard error is small so our predictions are fairly accurate.
+
+*  The Multiple R-squared tells us how much of the variation in the dependent variable our model explains.
+
+*  The F-statistic is the results of the hypothesis test that at least on of our predictor coefficients in not zero.  This p-value allows us to reject the null hypothesis that the true value of all of our coefficients is zero
 
 
 ```{r}
 slm_1 <- lm(price~carat, diamonds)
 summary(slm_1)
 ```
+
 Let's use the 'performance' package to evaluate this model
+
+We can see from the output of these plots that our data may be violating the assumptions of simple linear regression.
+
 ```{r}
 performance::check_model(slm_1)
 ```
+
+We are going to log transform both our predictor and dependent variable to see if this resolves some of our normality issues.
+
+```{r}
+diamonds <- diamonds %>% mutate(log_carat = log(carat), log_price = log(price))
+```
+
+Let's rerun our linear model and examine the output.  To be honest, I'm a little shocked how much this improved our model performance.
+
+*  We can see that our residuals are more normally distributed and the median is much closer to zero.
+
+*  Our coefficient for 'log_carat' has shrunk compared to the coefficient of 'carat' which is to be expected.  The Std. Error has also shrunk dramatically improving the t value.
+
+*  The Residual standard error has shrunk and our Multiple R-squared has improved from 0.8493 to 0.933.
+
+
+```{r}
+slm_2 <- lm(log_price~log_carat, diamonds)
+summary(slm_2)
+```
+
+Lastly, let's look at the model assumption graphs.  We have transformed our data so that it better fits the assumptions of Simple Linear Regression.
+
+
+```{r}
+performance::check_model(slm_2)
+```
+
+### Conclusion
+
+We have shown that Simple Linear Regression can be a power tool for an analyst for predictive modeling.  We have also shown how important it is to check that our model is conforming to the assumptions of Simple Linear Regression.  In our case, the data needed to be log transformed and the resulting model has expected better performance (R-squared went from 0.8493 to 0.933).  The one downside to log transforming our data is that we lose some of the interpretability.  It's harder to talk about the logs of diamond carats and prices.
